@@ -19,7 +19,9 @@ class UserManager(BaseUserManager):
 			username = username,
 			)
 		user.set_password(password)
-		if kwargs["is_admin"]:
+		
+		is_admin = kwargs.get("is_admin")
+		if is_admin:
 			user.is_staff = True
 			user.is_admin = True
 			user.is_superadmin = True
