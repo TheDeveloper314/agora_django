@@ -32,7 +32,7 @@ class UserManager(BaseUserManager):
 		user = self.create_user(first_name, last_name, username, email, password, is_admin = True)
 
 class User(AbstractBaseUser):
-	roles = ["Customer", "Restaurant Owner"]
+	roles = ["Customer", "Vendor"]
 	roles_choices = ((index + 1, role) for index, role in enumerate(roles))
 
 	first_name = models.CharField(max_length = 50)
