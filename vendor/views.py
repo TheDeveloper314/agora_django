@@ -7,6 +7,9 @@ from django.contrib import messages
 # Create your views here.
 
 def registerVendor(request):
+	if request.user.is_authenticated:
+		messages.warning(request, "You are already logged in!")
+		return redirect("dashboard")
 	if request.method == "POST":
 		form = UserForm(request.POST)
 		v_form = VendorForm(request.POST, request.FILES)

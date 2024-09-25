@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from .forms import UserForm
 from .models import User
-from django.contrib import messages
+from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
 def registerUser(request):
+	if request.user.is_authenticated:
+		messages.warning(request, "You are already logged in!")
+		return redirect("myAccount")
 	if request.method == "POST":
 		form = UserForm(request.POST)
 		if form.is_valid():
@@ -31,3 +36,48 @@ def registerUser(request):
 		form = UserForm()
 	context = {"form": form}
 	return render(request, "accounts/registerUser.html", context)
+
+def login(request):
+	if request.user.is_authenticated:
+		messages.warning(request, "You are already logged in!")
+		return redirect("myAccount")
+	if request.method == "POST":
+		email = request.POST["email"]
+		password = request.POST["password"]
+		user = auth.authenticate(email = email, password = password)
+		if user:
+			auth.login(request, user)
+			messages.success(request, "Successfully logged in")
+			return redirect("myAccount")
+		else:
+			messages.error(request, "Invalid credentials")
+			return redirect("login")
+
+	return render(request, "accounts/login.html")
+
+def logout(request):
+	auth.logout(request)
+	messages.info(request, "Successfully logged out")
+	return redirect("login")
+
+@login_required(login_url = "login")
+def myAccount(request):
+	user = request.user
+	user_role = user.get_role()
+	if not user_role and user.is_superadmin:
+		redirect_url = f"/admin"
+	else:
+		redirect_url = f"{user_role.lower()}Dashboard"
+	return redirect(redirect_url)
+
+@login_required(login_url = "login")
+def customerDashboard(request):
+	if request.user.get_role().lower() != "customer":
+		raise PermissionDenied
+	return render(request, "accounts/customerDashboard.html")
+
+@login_required(login_url = "login")
+def vendorDashboard(request):
+	if request.user.get_role().lower() != "vendor":
+		raise PermissionDenied
+	return render(request, "accounts/vendorDashboard.html")
