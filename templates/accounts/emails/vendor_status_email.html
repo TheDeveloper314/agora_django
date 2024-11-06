@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+Hi {{user.first_name}}
+
+{% if is_approved %}
+	Congratulations! Our admin team has approved your vendor application. --FoodOnline
+{% else %}
+	We are sorry. You vendor status has been rejected. --FoodOnline
+{% endif %}
+
+{% endautoescape %}

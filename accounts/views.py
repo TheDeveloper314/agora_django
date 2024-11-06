@@ -31,7 +31,7 @@ def registerUser(request):
 			user = User.objects.create_user(first_name = first_name, last_name = last_name, username = username, email = email, password = password)
 			user.role = User.roles.index("Customer") + 1
 			user.save()
-			# send_email(request, "verification_email",  user)
+			send_email(request, "verification_email",  user)
 			messages.success(request, "You have registered successfully.")
 			return redirect("registerUser")
 	else:

@@ -14,3 +14,14 @@ class Vendor(models.Model):
 
 	def __str__(self):
 		return self.vendor_name
+
+	# def save(self, *args, **kwargs):
+	# 	if self.pk:
+	# 		orig = Vendor.objects.get(pk = self.pk)
+	# 		if self.is_approved != orig.is_approved:
+	# 			if self.is_approved:
+	# 				send_email(request, "vendor_approval", self.user)
+	# 			else:
+	# 				send_email(request, "vendor_rejection", self.user)
+					
+	# 	return super(Vendor, self).save(*args, **kwargs)
